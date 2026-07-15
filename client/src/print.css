@@ -1,0 +1,24 @@
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-sales-report,
+  #printable-sales-report * {
+    visibility: visible;
+  }
+
+  #printable-sales-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  button,
+  input,
+  select,
+  label {
+    display: none !important;
+  }
+}

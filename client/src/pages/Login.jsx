@@ -1,23 +1,26 @@
 import { useState } from "react";
 import { supabase } from "../supabase/supabase";
 import "../styles/Login.css";
+import logo from "../assets/logo.png";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
+      setLoading(false);
       alert(error.message);
       return;
     }
-
-    alert("Login Successful!");
 
     console.log(data.user);
 
@@ -25,28 +28,50 @@ function Login() {
     window.location.href = "/dashboard";
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !loading) {
+      handleLogin();
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1>BPL Technologies</h1>
+        <div className="login-header">
+          <img src={logo} alt="BPL Technologies" className="login-logo" />
+          <h1>BPL Technologies</h1>
+          <p>Inventory &amp; Sales Management System</p>
+        </div>
 
-        <p>Inventory & Sales Management System</p>
+        <div className="login-field">
+          <label htmlFor="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoComplete="email"
+          />
+        </div>
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="login-field">
+          <label htmlFor="login-password">Password</label>
+          <input
+            id="login-password"
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown}
+            autoComplete="current-password"
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin} disabled={loading}>
+          {loading ? "Signing in…" : "Login"}
+        </button>
       </div>
     </div>
   );
